@@ -10,7 +10,7 @@ Lasted Updated on Sun Feb 23 21:00:00 2025
 """
 """
 /****************************************************
-Crowell Road Agriculturl Products - Inventory System
+Crowell Road Agricultural Products - Inventory System
 Purpose: Back End System and Graphical User Interface
 Intended Systems:Windows PC and RPI with touch screen
 Student: Joshua Z. Tynes
@@ -88,6 +88,7 @@ print(names)
 vegetables = names #["Beets", "Bean", "Brussel Sprouts", "Carrots", "Tomato", "Potato", "Squash"]
 selected_vegetable = None
 varieties = []
+order = []
 
 # Button settings
 button_width = 150
@@ -98,6 +99,11 @@ padding = 20
 default_colour = (200, 200, 200)
 hover_colour = (200, 000, 000)
 
+
+def variety_choice(selected_variety):
+    print("You've chosen", selected_variety)
+    order.append(selected_variety)
+    print(order)
 
 # Create buttons dynamically
 def create_button(options, window_name):
@@ -123,32 +129,55 @@ def check_click(buttons, mouse_pos):
     for text, (x1, y1, x2, y2) in buttons:
         if x1 < mouse_pos[0] < x2 and y1 < mouse_pos[1] < y2:
             return text
-        return None
+    return None
 
 def get_varieties():
+    varieties = []
     print(xlsx)
     out = xlsx.to_numpy().tolist()
-    print(out)
-    print(len(out))
-    #mylist = [xlsx.columns.values.tolist()] + xlsx.values.tolist()
-    #print(mylist)
+#    print(out)
+#    print(len(out))
+#    print(mylist)
+
+    for i in range(len(out)):
+        extracted_veg = out[i]
+        if extracted_veg[1] == selected_vegetable:
+            # print(extracted_veg[2])
+            varieties.append(extracted_veg[2])
+#    print(varieties) # For testing to ensure correct list was generated
+    return varieties
+
+def variety_selection():
+    cv2.namedWindow(selected_vegetable)
+    varieties = get_varieties()
+    buttons = create_button(varieties, selected_vegetable)
 
     while True:
+        frame = np.ones((600, 800, 3),
+                        dtype=np.uint8) * 255  # creates a 400 by 300 windows with hex rgb values for each pixel
+        mouse_pos = cv2.getWindowImageRect(selected_vegetable)[:2]
+        frame = draw_buttons(frame, buttons, mouse_pos)
+        cv2.imshow(selected_vegetable, frame)
+
         key = cv2.waitKey(1) & 0xFF
         if key == 27:
             break
-        elif key == 13:
-            varieties.append(text_input)
-            text_input = ""
-        elif key == 8:
-            text_input = text_input[:-1]
-        elif 32 <= key <= 126:
-            text_input += chr(key)
 
-def variety_selection():
-    cv2.namedWindow("Select Variety")
-    get_varieties()
-    buttons = create_button(varieties, "Select Variety")
+        if cv2.getWindowProperty(selected_vegetable, cv2.WND_PROP_VISIBLE) < 1:
+            break
+
+        def mouse_callback(event, x, y, flags, param):
+            global selected_variety
+            if event == cv2.EVENT_LBUTTONDOWN:
+                selected = check_click(buttons, (x, y))
+                if selected:
+                    selected_variety = selected
+                    variety_choice(selected_variety)   #add to chosen vegetables to buy
+                    #cv2.destroyWindow(selected_variety)
+                    # enter_varities()
+
+        cv2.setMouseCallback(selected_vegetable, mouse_callback)
+    #cv2.destroyAllWindows()
 
 def vegetable_selection():
     global selected_vegetable
@@ -184,7 +213,7 @@ def vegetable_selection():
         cv2.setMouseCallback("Select Vegetable", mouse_callback)
     #cv2.destroyAllWindows()
 
-
+"""
 def enter_varieties():
     global varieties
     cv2.namedWindow("Enter Varieties")
@@ -209,7 +238,7 @@ def enter_varieties():
             text_input += chr(key)
 
     #cv2.destroyAllWindows()
-
+"""
 
 if __name__ == "__main__":
     vegetable_selection()
