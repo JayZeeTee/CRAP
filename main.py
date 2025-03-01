@@ -93,7 +93,7 @@ order = []
 # Button settings
 button_width = 150
 button_height = 50
-padding = 20
+padding = 50
 
 # Colours
 default_colour = (200, 200, 200)
@@ -108,10 +108,18 @@ def variety_choice(selected_variety):
 # Create buttons dynamically
 def create_button(options, window_name):
     buttons = []
+    buttons_per_row = 4
+    created = 0
+    cols = 0
     for i, option in enumerate(options):
-        x1, y1 = 20, 20 + i * (button_height + padding)
+        x1, y1 = 20 + created * (button_width + padding), 20 + cols * (button_height + padding)
         x2, y2 = x1 + button_width, y1 + button_height
         buttons.append((option, (x1, y1, x2, y2)))
+        if created < buttons_per_row:
+            created += 1
+        else:
+            created = 0
+            cols += 1
     return buttons
 
 
