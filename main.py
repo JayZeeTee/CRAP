@@ -56,9 +56,6 @@ class Prod(Item):
         super().__init__(Name, Price, Quantity)
         self.Type = Type
 
-    def set_ID(self, ID):
-        self.ID = ID
-
 
 class Sold(Prod):
     Status = "Sold"  # Class Attribute
@@ -72,6 +69,7 @@ class Sold(Prod):
         # Print message
         # Get Sale Date
         return self.SaleDate
+
 
 file_path = r'./CRAPveg.xlsx'
 xlsx = pd.read_excel(file_path)
@@ -240,13 +238,34 @@ def display_inventory():
 
 
 def update_inventory():
+    global xlsx
     print("The following items are currently in stock:")
     print(xlsx)
-    out = xlsx.to_numpy().tolist()
-    for i in range(len(out)):
-        extracted_veg = out[i]
-        if extracted_veg[1] == selected_vegetable:
-            print(extracted_veg[2])
+    selected_vegetable = input("Enter the number of the vegetable you would like to update: ")
+
+    try:
+        selected_vegetable = int(selected_vegetable)
+        if selected_vegetable < 0 or selected_vegetable > len(vegetables):
+            print("Invalid input. Please try again.")
+            return
+        selected_row = selected_vegetable #xlsx.loc[selected_vegetable] replace if you want to call by name
+        print(f"\nYou selected: {selected_row['Name']} - {selected_row['Variety']}(Current Quantity: {selected_row['Quantity']})")
+
+        new_quantity = input("Enter the new quantity of the selected item: ")
+        new_quantity = int(new_quantity)
+        if new_quantity < 0:
+            new_quantity = 0
+
+        #Update the quantity in the xlsx file
+        xlsx.loc[selected_vegetable, 'Quantity'] = new_quantity
+
+        #Save to the Excel file
+        xlsx.to_excel(file_path, index=False)
+        print(f"Quantity updated successfully. New quantity: {new_quantity}")
+        print(xlsx)
+
+    except ValueError:
+        print("Invalid input. Please try again.")
 
 def add_new_item():
     print("Please enter the details of the new item you would like to add:")
