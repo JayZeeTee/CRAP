@@ -101,13 +101,13 @@ hover_colour = (200, 000, 000)
 
 
 def variety_choice(selected_variety):
-    print("You've chosen", selected_variety)
+    #print("You've chosen", selected_variety)
     order.append(selected_variety)
-    print(order)
+    #print(order)
 
 # Create buttons dynamically
 def create_button(options, window_name):
-    buttons = [('<- Back', (20, 20, 170, 70))]
+    buttons = []#[('<- Back', (20, 20, 170, 70)),('$ Checkout', (620, 20, 770, 70))]
     buttons_per_row = 4
     created = 0
     cols = 0
@@ -144,7 +144,7 @@ def get_varieties():
     varieties = []
     print(xlsx)
     out = xlsx.to_numpy().tolist()
-#    print(out)
+    print(out)
 #    print(len(out))
 #    print(mylist)
 
@@ -160,14 +160,14 @@ def variety_selection():
     #cv2.destroyWindow("Select Vegetable")
     cv2.namedWindow(selected_vegetable)
     varieties = get_varieties()
+    variety_buttons = [('<- Back', (20, 20, 170, 70)),('$ Checkout', (620, 20, 770, 70))]
     buttons = create_button(varieties, selected_vegetable)
 
     while True:
         frame = np.ones((600, 800, 3),
                         dtype=np.uint8) * 255  # creates a 400 by 300 windows with hex rgb values for each pixel
         mouse_pos = cv2.getWindowImageRect(selected_vegetable)[:2]
-        #frame = draw_buttons(frame, [('<- Back', (20, 20, 170, 70))], mouse_pos)
-        frame = draw_buttons(frame, buttons, mouse_pos)
+        frame = draw_buttons(frame, buttons+variety_buttons, mouse_pos)
         cv2.imshow(selected_vegetable, frame)
 
         key = cv2.waitKey(1) & 0xFF
@@ -178,14 +178,20 @@ def variety_selection():
             break
 
         def mouse_callback(event, x, y, flags, param):
-            global selected_variety
             if event == cv2.EVENT_LBUTTONDOWN:
                 selected = check_click(buttons, (x, y))
+                back = check_click([('<- Back', (20, 20, 170, 70))], (x, y))
+                checkout = check_click([('$ Checkout', (620, 20, 770, 70))], (x, y))
                 if selected:
                     selected_variety = selected
                     variety_choice(selected_variety)   #add to chosen vegetables to buy
                     #cv2.destroyWindow(selected_variety)
                     # enter_varities()
+                elif back:
+                    cv2.destroyWindow(selected_vegetable)
+                elif checkout:
+                    print("Checkout")
+                    print("You have chosen to purchase the following vegetables: ", order)
 
         cv2.setMouseCallback(selected_vegetable, mouse_callback)
     #cv2.destroyAllWindows()
@@ -199,7 +205,7 @@ def vegetable_selection():
         frame = np.ones((600, 800, 3),
                         dtype=np.uint8) * 255  # creates a 400 by 300 windows with hex rgb values for each pixel
         mouse_pos = cv2.getWindowImageRect("Select Vegetable")[:2]
-        frame = draw_buttons(frame, buttons, mouse_pos)
+        frame = draw_buttons(frame, buttons+[('$ Checkout', (620, 20, 770, 70))], mouse_pos)
         cv2.imshow("Select Vegetable", frame)
 
         key = cv2.waitKey(1) & 0xFF
@@ -213,13 +219,14 @@ def vegetable_selection():
             global selected_vegetable
             if event == cv2.EVENT_LBUTTONDOWN:
                 selected = check_click(buttons, (x, y))
+                checkout = check_click([('$ Checkout', (620, 20, 770, 70))], (x, y))
                 if selected:
                     selected_vegetable = selected
                     variety_selection()# Create veg window
-                    #cv2.createButton('ButtonBeans', )  # add callback function after name
-                    #cv2.createButton('ButtonCarrots', )
+                elif checkout:
+                    print("Checkout")
+                    print("You have chosen to purchase the following vegetables: ", order)
                     #cv2.destroyWindow("Select Vegetable")
-                    # enter_varities()
 
         cv2.setMouseCallback("Select Vegetable", mouse_callback)
     #cv2.destroyAllWindows()
