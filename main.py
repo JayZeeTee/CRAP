@@ -144,7 +144,7 @@ def get_varieties():
     varieties = []
     print(xlsx)
     out = xlsx.to_numpy().tolist()
-    print(out)
+#    print(out)
 #    print(len(out))
 #    print(mylist)
 
