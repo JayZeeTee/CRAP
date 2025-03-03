@@ -107,12 +107,12 @@ def variety_choice(selected_variety):
 
 # Create buttons dynamically
 def create_button(options, window_name):
-    buttons = []
+    buttons = [('<- Back', (20, 20, 170, 70))]
     buttons_per_row = 4
     created = 0
     cols = 0
     for i, option in enumerate(options):
-        x1, y1 = 20 + created * (button_width + padding), 20 + cols * (button_height + padding)
+        x1, y1 = 20 + created * (button_width + padding), 100 + cols * (button_height + padding)
         x2, y2 = x1 + button_width, y1 + button_height
         buttons.append((option, (x1, y1, x2, y2)))
         if created < buttons_per_row:
@@ -125,8 +125,9 @@ def create_button(options, window_name):
 
 # Draw buttons on window
 def draw_buttons(frame, buttons, mouse_pos):
+    #print(buttons)
     for text, (x1, y1, x2, y2) in buttons:
-        colour = hover_colour if (x1 < mouse_pos[0] < x2 and y1 < mouse_pos[1] < y2) else default_colour
+        colour = hover_colour if (x1 < mouse_pos[0] < x2 and y1 < mouse_pos[1] < y2) else default_colour #Hover colour not working properly
         cv2.rectangle(frame, (x1, y1), (x2, y2), colour, -1)
         cv2.putText(frame, text, (x1 + 10, y1 + 30), cv2.FONT_HERSHEY_SIMPLEX, 0.40, (0, 0, 0), 2)
     return frame
@@ -156,6 +157,7 @@ def get_varieties():
     return varieties
 
 def variety_selection():
+    #cv2.destroyWindow("Select Vegetable")
     cv2.namedWindow(selected_vegetable)
     varieties = get_varieties()
     buttons = create_button(varieties, selected_vegetable)
@@ -164,6 +166,7 @@ def variety_selection():
         frame = np.ones((600, 800, 3),
                         dtype=np.uint8) * 255  # creates a 400 by 300 windows with hex rgb values for each pixel
         mouse_pos = cv2.getWindowImageRect(selected_vegetable)[:2]
+        #frame = draw_buttons(frame, [('<- Back', (20, 20, 170, 70))], mouse_pos)
         frame = draw_buttons(frame, buttons, mouse_pos)
         cv2.imshow(selected_vegetable, frame)
 
@@ -213,8 +216,8 @@ def vegetable_selection():
                 if selected:
                     selected_vegetable = selected
                     variety_selection()# Create veg window
-                    cv2.createButton('ButtonBeans', ) #add callback function after name
-                    cv2.createButton('ButtonCarrots', )
+                    #cv2.createButton('ButtonBeans', )  # add callback function after name
+                    #cv2.createButton('ButtonCarrots', )
                     #cv2.destroyWindow("Select Vegetable")
                     # enter_varities()
 
