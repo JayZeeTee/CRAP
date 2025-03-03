@@ -73,16 +73,10 @@ class Sold(Prod):
         # Get Sale Date
         return self.SaleDate
 
-#df = pd.read_excel("Q:\School Files\DAL\ENGM4620-Python\CRAPveg.xlsx")
-#print(df)
-
-#out = df.to_numpy().tolist()
-#print(out)
-
-file_path = r'Q:\School Files\DAL\ENGM4620-Python\CRAPveg.xlsx'
+file_path = r'./CRAPveg.xlsx'
 xlsx = pd.read_excel(file_path)
 names = unique(xlsx.Name)
-print(names)
+#print(names)
 
 # List of vegetable types
 vegetables = names
@@ -142,7 +136,7 @@ def check_click(buttons, mouse_pos):
 
 def get_varieties():
     varieties = []
-    print(xlsx)
+#    print(xlsx)
     out = xlsx.to_numpy().tolist()
 #    print(out)
 #    print(len(out))
@@ -243,11 +237,7 @@ def admin_mode():
 def display_inventory():
     print("The following items are currently in stock:")
     print(xlsx)
-    out = xlsx.to_numpy().tolist()
-    for i in range(len(out)):
-        extracted_veg = out[i]
-        if extracted_veg[1] == selected_vegetable:
-            print(extracted_veg[2])
+
 
 def update_inventory():
     print("The following items are currently in stock:")
@@ -293,19 +283,21 @@ def welcome():
     main_menu()
 
 def main_menu():
-    print("1. Enter Administration Menu")
-    print("2. Launch Sales")
-    print("3. Exit")
-    choice = input("Enter your choice: ")
-    if choice == "1":
-        admin_mode()
-    elif choice == "2":
-        sales_terminal()
-    elif choice == "3":
-        exit()
-    else:
-        print("Invalid choice. Please try again.")
-        main_menu()
+    while True:
+        print("Please select from the following options: ")
+        print("1. Enter Administration Menu")
+        print("2. Launch Sales")
+        print("3. Exit")
+        choice = input("Enter your choice: ")
+        if choice == "1":
+            admin_mode()
+        elif choice == "2":
+            sales_terminal()
+        elif choice == "3":
+            exit()
+        else:
+            print("Invalid choice. Please try again.")
+            main_menu()
 
 def crap():
     welcome()
