@@ -85,7 +85,7 @@ names = unique(xlsx.Name)
 print(names)
 
 # List of vegetable types
-vegetables = names #["Beets", "Bean", "Brussel Sprouts", "Carrots", "Tomato", "Potato", "Squash"]
+vegetables = names
 selected_vegetable = None
 varieties = []
 order = []
@@ -231,32 +231,84 @@ def vegetable_selection():
         cv2.setMouseCallback("Select Vegetable", mouse_callback)
     #cv2.destroyAllWindows()
 
-"""
-def enter_varieties():
-    global varieties
-    cv2.namedWindow("Enter Varieties")
-    text_input = ""
+def sales_terminal():
+    print("The C.R.A.P. Sales Terminal will now be launched")
+    print("Users may now select the vegetables they would like to purchase")
+    vegetable_selection()
 
-    while True:
-        frame = np.ones((600, 800, 3), dtype=np.uint8) * 255
-        cv2.putText(frame, f"Varieties of {selected_vegetable}:", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
-        cv2.putText(frame, text_input, (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 2)
-        cv2.putText(frame, "Press Enter to Save", (50, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-        cv2.imshow("Enter Varieties", frame)
+def admin_mode():
+    print("The C.R.A.P. Administration Menu will now be launched")
+    admin_menu()
 
-        key = cv2.waitKey(1) & 0xFF
-        if key == 27:
-            break
-        elif key == 13:
-            varieties.append(text_input)
-            text_input = ""
-        elif key == 8:
-            text_input = text_input[:-1]
-        elif 32 <= key <= 126:
-            text_input += chr(key)
+def display_inventory():
+    print("The following items are currently in stock:")
+    print(xlsx)
+    out = xlsx.to_numpy().tolist()
+    for i in range(len(out)):
+        extracted_veg = out[i]
+        if extracted_veg[1] == selected_vegetable:
+            print(extracted_veg[2])
 
-    #cv2.destroyAllWindows()
-"""
+def update_inventory():
+    print("The following items are currently in stock:")
+    print(xlsx)
+    out = xlsx.to_numpy().tolist()
+    for i in range(len(out)):
+        extracted_veg = out[i]
+        if extracted_veg[1] == selected_vegetable:
+            print(extracted_veg[2])
+
+def add_new_item():
+    print("Please enter the details of the new item you would like to add:")
+    name = input("Enter the name of the item: ")
+    price = input("Enter the price of the item: ")
+    quantity = input("Enter the quantity of the item: ")
+    new_item = Item(name, price, quantity)
+    xlsx.loc[len(xlsx)] = [selected_vegetable, name, price, quantity]
+    xlsx.to_excel(file_path, index=False)
+    print("Item added successfully!")
+    print(xlsx)
+
+def admin_menu():
+    print("1. See Inventory")
+    print("2. Update Inventory")
+    print("3. Add New Item")
+    print("4. Return to Main Menu")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        display_inventory()
+    elif choice == "2":
+        update_inventory()
+    elif choice == "3":
+        add_new_item()
+    elif choice == "4":
+        main_menu()
+    else:
+        print("Invalid choice. Please try again.")
+        admin_menu()
+
+def welcome():
+    print("Welcome to C.R.A.P. program")
+    print("Please select from the following options: ")
+    main_menu()
+
+def main_menu():
+    print("1. Enter Administration Menu")
+    print("2. Launch Sales")
+    print("3. Exit")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        admin_mode()
+    elif choice == "2":
+        sales_terminal()
+    elif choice == "3":
+        exit()
+    else:
+        print("Invalid choice. Please try again.")
+        main_menu()
+
+def crap():
+    welcome()
 
 if __name__ == "__main__":
-    vegetable_selection()
+    crap()
