@@ -271,18 +271,24 @@ def add_new_item():
     print("Please enter the details of the new item you would like to add:")
     name = input("What type of vegetable is the new item: ")
     variety = input("Enter the variety of the new item: ")
+
     try:
-        price = float(input("Enter the price of the item: "))
-        quantity = int(input("Enter the quantity of the item: "))
+        price_input = input("Enter the price of the item: ")
+        quantity_input = input("Enter the quantity of the item: ")
+
+        price = float(price_input)
+        quantity = int(quantity_input)
+
         if quantity < 0:
             quantity = 0
-        new_data = pd.DataFrame([["veg", name, variety, price, quantity]], columns=xlsx.columns)
+
+        new_data = pd.DataFrame([["Veg", name, variety, "", quantity, price]], columns=xlsx.columns)
         xlsx = pd.concat([xlsx, new_data], ignore_index=True)
         xlsx.to_excel(file_path, index=False)
         print("Item added successfully!")
         print(xlsx)
-    except ValueError:
-        print("Invalid input. Please enter numerical values for price and quantity.")
+    except ValueError as e:
+        print(f"Invalid input: {e}. Please enter numerical values for price and quantity.")
 
 def admin_menu():
     print("1. See Inventory")
