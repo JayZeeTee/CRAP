@@ -241,25 +241,23 @@ def update_inventory():
     global xlsx
     print("The following items are currently in stock:")
     print(xlsx)
-    selected_vegetable = input("Enter the number of the vegetable you would like to update: ")
+    #selected_vegetable = input("Enter the number of the vegetable you would like to update: ")
 
     try:
-        selected_vegetable = int(selected_vegetable)
-        if selected_vegetable < 0 or selected_vegetable > len(vegetables):
-            print("Invalid input. Please try again.")
+        selected_index = int(input("Enter the row number of the vegetable you would like to update: "))
+        if selected_index < 0 or selected_index >= len(xlsx):
+            print("Invalid row number. Please try again.")
             return
-        selected_row = selected_vegetable #xlsx.loc[selected_vegetable] replace if you want to call by name
-        print(f"\nYou selected: {selected_row['Name']} - {selected_row['Variety']}(Current Quantity: {selected_row['Quantity']})")
 
-        new_quantity = input("Enter the new quantity of the selected item: ")
-        new_quantity = int(new_quantity)
+        selected_row = xlsx.iloc[selected_index]
+        print(
+            f"\nYou selected: {selected_row['Name']} - {selected_row['Variety']} (Current Quantity: {selected_row['Quantity']})")
+
+        new_quantity = int(input("Enter the new quantity of the selected item: "))
         if new_quantity < 0:
             new_quantity = 0
 
-        #Update the quantity in the xlsx file
-        xlsx.loc[selected_vegetable, 'Quantity'] = new_quantity
-
-        #Save to the Excel file
+        xlsx.at[selected_index, 'Quantity'] = new_quantity
         xlsx.to_excel(file_path, index=False)
         print(f"Quantity updated successfully. New quantity: {new_quantity}")
         print(xlsx)
@@ -267,16 +265,24 @@ def update_inventory():
     except ValueError:
         print("Invalid input. Please try again.")
 
+
 def add_new_item():
+    global xlsx
     print("Please enter the details of the new item you would like to add:")
-    name = input("Enter the name of the item: ")
-    price = input("Enter the price of the item: ")
-    quantity = input("Enter the quantity of the item: ")
-    new_item = Item(name, price, quantity)
-    xlsx.loc[len(xlsx)] = [selected_vegetable, name, price, quantity]
-    xlsx.to_excel(file_path, index=False)
-    print("Item added successfully!")
-    print(xlsx)
+    name = input("What type of vegetable is the new item: ")
+    variety = input("Enter the variety of the new item: ")
+    try:
+        price = float(input("Enter the price of the item: "))
+        quantity = int(input("Enter the quantity of the item: "))
+        if quantity < 0:
+            quantity = 0
+        new_data = pd.DataFrame([["veg", name, variety, price, quantity]], columns=xlsx.columns)
+        xlsx = pd.concat([xlsx, new_data], ignore_index=True)
+        xlsx.to_excel(file_path, index=False)
+        print("Item added successfully!")
+        print(xlsx)
+    except ValueError:
+        print("Invalid input. Please enter numerical values for price and quantity.")
 
 def admin_menu():
     print("1. See Inventory")
