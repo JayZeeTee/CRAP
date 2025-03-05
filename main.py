@@ -242,7 +242,8 @@ def update_inventory():
     print("2. Change Price")
     print("3. Change Vegetable Type")
     print("4. Change Variety Name")
-    print("5. Return to Main Menu")
+    print("5. Sort Inventory")
+    print("6. Return to Main Menu")
     choice = input("Enter your choice: ")
     if choice == "1":
         change_quantity()
@@ -253,10 +254,19 @@ def update_inventory():
     elif choice == "4":
         change_variety()
     elif choice == "5":
+        sort_inventory()
+    elif choice == "6":
         main_menu()
     else:
         print("Invalid choice. Please try again.")
         update_inventory()
+
+def sort_inventory():
+    global xlsx
+    xlsx = xlsx.sort_values(by=["Type", "Name", "Variety"], ascending=[True, True, True])
+    xlsx.to_excel(file_path, index=False)
+    print("Inventory sorted successfully!")
+    print(xlsx)
 
 def change_name():
     print("change name")
