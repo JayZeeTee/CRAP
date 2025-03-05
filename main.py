@@ -238,10 +238,65 @@ def display_inventory():
 
 
 def update_inventory():
+    print("1. Change Quantity")
+    print("2. Change Price")
+    print("3. Change Vegetable Type")
+    print("4. Change Variety Name")
+    print("5. Return to Main Menu")
+    choice = input("Enter your choice: ")
+    if choice == "1":
+        change_quantity()
+    elif choice == "2":
+        change_price()
+    elif choice == "3":
+        change_name()
+    elif choice == "4":
+        change_variety()
+    elif choice == "5":
+        main_menu()
+    else:
+        print("Invalid choice. Please try again.")
+        update_inventory()
+
+def change_name():
+    print("change name")
+
+def change_variety():
+    print("change variety")
+
+def change_price():
     global xlsx
     print("The following items are currently in stock:")
     print(xlsx)
-    #selected_vegetable = input("Enter the number of the vegetable you would like to update: ")
+
+    try:
+        selected_index = int(input("Enter the row number of the vegetable you would like to update: "))
+        if selected_index < 0 or selected_index >= len(xlsx):
+            print("Invalid row number. Please try again.")
+            return
+
+        selected_row = xlsx.iloc[selected_index]
+        print(
+            f"\nYou selected: {selected_row['Name']} - {selected_row['Variety']} (Current Price: {selected_row['Price']})")
+
+        new_price = float(input("Enter the new price of the selected item: "))
+        if new_price < 0:
+            new_price = selected_row['Price']
+            print("Sorry, the price cannot be set below zero.")
+
+        else:
+            xlsx.at[selected_index, 'Price'] = new_price
+            xlsx.to_excel(file_path, index=False)
+            print(f"Price updated successfully. New Price: {new_price}")
+            print(xlsx)
+
+    except ValueError:
+        print("Invalid input. Please try again.")
+
+def change_quantity():
+    global xlsx
+    print("The following items are currently in stock:")
+    print(xlsx)
 
     try:
         selected_index = int(input("Enter the row number of the vegetable you would like to update: "))
